@@ -4,7 +4,7 @@ export default {
     const targetUrl = url.searchParams.get('url');
 
     try {
-      const nextApiResponse = await fetch(`https://tokumeiapi4.workers.dev/?url=${encodeURIComponent(targetUrl)}`, {
+      const nextApiResponse = await fetch(`https://tokumeiapi4.system322940-dev.workers.dev/?url=${encodeURIComponent(targetUrl)}`, {
         headers: { 'User-Agent': 'Cloudflare-Worker-Relay-3' }
       });
       const data = await nextApiResponse.text();

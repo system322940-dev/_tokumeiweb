@@ -14,16 +14,17 @@ export default {
     const targetUrl = url.searchParams.get('url');
 
     if (!targetUrl) {
-      return new Response('Missing url parameter', { status: 400 });
+      return new Response('エラー: urlパラメータがありません。', { status: 400 });
     }
 
     try {
-      const nextApiResponse = await fetch(`https://tokumeiapi2.system322940-dev.workers.dev/?url=${encodeURIComponent(targetUrl)}`, {
+      const targetResponse = await fetch(targetUrl, {
         headers: {
-          'User-Agent': 'Cloudflare-Worker-Relay-1'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
       });
-      const data = await nextApiResponse.text();
+
+      const data = await targetResponse.text();
 
       return new Response(data, {
         headers: {
@@ -31,8 +32,9 @@ export default {
           'Content-Type': 'text/plain; charset=utf-8'
         }
       });
+
     } catch (error) {
-      return new Response(`API1 Error: ${error.message}`, { status: 500 });
+      return new Response(`通信エラーが発生しました: ${error.message}`, { status: 500 });
     }
   },
 };

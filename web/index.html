@@ -17,7 +17,7 @@
     <div class="container">
         <h1>APIバケツリレー</h1>
         <p>取得したいサイトのURLを入力してください：</p>
-        <input type="text" id="targetUrl" value="https://example.com">
+        <input type="text" id="targetUrl" value="https://">
         <button onclick="fetchData()">取得開始</button>
 
         <h2>取得結果 (HTML)</h2>
@@ -28,9 +28,9 @@
         async function fetchData() {
             const targetUrl = document.getElementById('targetUrl').value;
             const resultEl = document.getElementById('result');
-            resultEl.textContent = 'API1にリクエスト送信中...（バケツリレー開始）';
+            resultEl.textContent = 'API1にリクエスト送信中...';
 
-            const API1_URL = 'https://tokumeiapi1.workers.dev';
+            const API1_URL = 'https://tokumeiapi1.system322940-dev.workers.dev';
 
             try {
                 const response = await fetch(`${API1_URL}/?url=${encodeURIComponent(targetUrl)}`);

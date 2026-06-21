@@ -1,15 +1,14 @@
-const express = require('express');
-const app = express();
-const PORT = 3004;
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const targetUrl = url.searchParams.get('url');
 
-app.get('/proxy4', async (req, res) => {
-    const targetUrl = req.query.url;
-        const response = await fetch(`http://localhost:3005/proxy5?url=${encodeURIComponent(targetUrl)}`);
-        const data = await response.text();
-        res.send(data);
+    try {
+      const nextApiResponse = await fetch(`https://<あなたのapi5のURL>/?url=${encodeURIComponent(targetUrl)}`);
+      const data = await nextApiResponse.text();
+      return new Response(data, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     } catch (error) {
-        res.status(500).send(`API4 Error: ${error.message}`);
+      return new Response(`API4 Error: ${error.message}`, { status: 500 });
     }
-});
-
-app.listen(PORT, () => console.log(`API4 running on port ${PORT}`));
+  },
+};

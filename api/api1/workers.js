@@ -18,7 +18,7 @@ export default {
     }
 
     try {
-      const nextApiResponse = await fetch(`https://<あなたのapi2のURL>/?url=${encodeURIComponent(targetUrl)}`);
+      const nextApiResponse = await fetch(`https://tokumeiapi2.system322940-dev.workers.dev/?url=${encodeURIComponent(targetUrl)}`);
       const data = await nextApiResponse.text();
 
       return new Response(data, {

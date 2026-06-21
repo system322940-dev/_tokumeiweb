@@ -1,26 +1,34 @@
-const http = require('http');
-const PORT = 3001;
+export default {
+  async fetch(request, env, ctx) {
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        }
+      });
+    }
 
-const server = http.createServer(async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-
-    const reqUrl = new URL(req.url, `http://${req.headers.host}`);
-    const targetUrl = reqUrl.searchParams.get('url');
+    const url = new URL(request.url);
+    const targetUrl = url.searchParams.get('url');
 
     if (!targetUrl) {
-        res.statusCode = 400;
-        return res.end('Missing url parameter');
+      return new Response('Missing url parameter', { status: 400 });
     }
 
     try {
-        const nextApiResponse = await fetch(`http://localhost:3002/?url=${encodeURIComponent(targetUrl)}`);
-        const data = await nextApiResponse.text();
-        res.end(data);
-    } catch (error) {
-        res.statusCode = 500;
-        res.end(`API1 Error: ${error.message}`);
-    }
-});
+      const nextApiResponse = await fetch(`https://<あなたのapi2のURL>/?url=${encodeURIComponent(targetUrl)}`);
+      const data = await nextApiResponse.text();
 
-server.listen(PORT, () => console.log(`API1 (No Lib) running on port ${PORT}`));
+      return new Response(data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'text/plain; charset=utf-8'
+        }
+      });
+    } catch (error) {
+      return new Response(`API1 Error: ${error.message}`, { status: 500 });
+    }
+  },
+};

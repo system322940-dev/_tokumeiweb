@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>APIバケツリレー</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        input[type="text"] { width: 300px; padding: 5px; }
+        button { padding: 5px 10px; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>APIバケツリレー スクレイピング</h1>
+    <p>取得したいサイトのURLを入力してください：</p>
+    <input type="text" id="targetUrl" value="https://example.com">
+    <button onclick="fetchData()">取得開始</button>
+
+    <h2>取得結果</h2>
+    <pre id="result">ここに結果が表示されます</pre>
+
+    <script>
+        async function fetchData() {
+            const url = document.getElementById('targetUrl').value;
+            const resultEl = document.getElementById('result');
+            resultEl.textContent = '取得中...';
+
+            try {
+                // 最初のAPI (api1) にターゲットURLを送信
+                const response = await fetch(`http://localhost:3001/proxy1?url=${encodeURIComponent(url)}`);
+                const data = await response.text();
+                resultEl.textContent = data;
+            } catch (error) {
+                resultEl.textContent = 'エラーが発生しました: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -2,36 +2,47 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>APIバケツリレー</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APIバケツリレー (Cloudflare Workers版)</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        input[type="text"] { width: 300px; padding: 5px; }
-        button { padding: 5px 10px; }
-        pre { background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        body { font-family: sans-serif; margin: 20px; background: #f9f9f9; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0051a8; }
+        pre { background: #222; color: #fff; padding: 15px; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: 400px; }
     </style>
 </head>
 <body>
-    <h1>APIバケツリレー スクレイピング</h1>
-    <p>取得したいサイトのURLを入力してください：</p>
-    <input type="text" id="targetUrl" value="https://example.com">
-    <button onclick="fetchData()">取得開始</button>
+    <div class="container">
+        <h1>APIバケツリレー</h1>
+        <p>取得したいサイトのURLを入力してください：</p>
+        <input type="text" id="targetUrl" value="https://example.com">
+        <button onclick="fetchData()">取得開始</button>
 
-    <h2>取得結果</h2>
-    <pre id="result">ここに結果が表示されます</pre>
+        <h2>取得結果 (HTML)</h2>
+        <pre id="result">ここに結果が表示されます</pre>
+    </div>
 
     <script>
         async function fetchData() {
-            const url = document.getElementById('targetUrl').value;
+            const targetUrl = document.getElementById('targetUrl').value;
             const resultEl = document.getElementById('result');
-            resultEl.textContent = '取得中...';
+            resultEl.textContent = 'API1にリクエスト送信中...（バケツリレー開始）';
+
+            const API1_URL = 'https://tokumeiapi1.workers.dev';
 
             try {
-                // 最初のAPI (api1) にターゲットURLを送信
-                const response = await fetch(`http://localhost:3001/proxy1?url=${encodeURIComponent(url)}`);
+                const response = await fetch(`${API1_URL}/?url=${encodeURIComponent(targetUrl)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`サーバーエラー: ${response.status}`);
+                }
+                
                 const data = await response.text();
                 resultEl.textContent = data;
             } catch (error) {
-                resultEl.textContent = 'エラーが発生しました: ' + error.message;
+                resultEl.textContent = 'エラーが発生しました:\n' + error.message;
             }
         }
     </script>
